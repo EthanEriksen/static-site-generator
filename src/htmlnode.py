@@ -12,7 +12,7 @@ class HTMLNode:
         props_list = []
 
         for prop in self.props:
-            props_list.append(f" {prop}={self.props[prop]}")
+            props_list.append(f" {prop}=\"{self.props[prop]}\"")
 
         return "".join(props_list)
     
