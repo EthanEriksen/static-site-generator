@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, text_types
-from inline_markdown import split_nodes_delimiter
+from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 
 class TestInlineMarkdown(unittest.TestCase):
     def test_split_nodes_delimiter_bold(self):
@@ -46,6 +46,18 @@ class TestInlineMarkdown(unittest.TestCase):
 
         self.assertEqual(output_nodes, correct_output_nodes)
 
+    def test_image_extraction(self):
+        text = "This is some text containing ![an image](https://imgur.com/12345.jpg)"
+        images = extract_markdown_images(text)
+
+        self.assertEqual(images, [("an image", "https://imgur.com/12345.jpg")])
+
+    def test_link_extraction(self):
+        text = "This is some text containing [a link](https://boot.dev/)"
+        links = extract_markdown_links(text)
+
+        self.assertEqual(links, [("a link", "https://boot.dev/")])
+        
 
 if __name__ == "__main__":
     unittest.main()
