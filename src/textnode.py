@@ -1,11 +1,13 @@
 from htmlnode import LeafNode
 
-text_type_text = "text"
-text_type_bold = "bold"
-text_type_italic = "italic"
-text_type_code = "code"
-text_type_link = "link"
-text_type_image = "image"
+text_types = {
+    "text": "text",
+    "bold": "bold",
+    "italic": "italic",
+    "code": "code",
+    "link": "link",
+    "image": "image"
+}
 
 class TextNode:
     def __init__(self, text, text_type, url=None):
@@ -31,22 +33,22 @@ class TextNode:
 
 
 def text_node_to_html_node(text_node):
-    if text_node.text_type == text_type_text:
+    if text_node.text_type == text_types["text:"]:
         return LeafNode(None, text_node.text)
     
-    if text_node.text_type == text_type_bold:
+    if text_node.text_type == text_types["bold:"]:
         return LeafNode("b", text_node.text)
     
-    if text_node.text_type == text_type_italic:
+    if text_node.text_type == text_types["italic:"]:
         return LeafNode("i", text_node.text)
     
-    if text_node.text_type == text_type_code:
+    if text_node.text_type == text_types["code:"]:
         return LeafNode("code", text_node.text)
     
-    if text_node.text_type == text_type_link:
+    if text_node.text_type == text_types["link:"]:
         return LeafNode("a", text_node.text, {"href": text_node.url})
     
-    if text_node.text_type == text_type_image:
+    if text_node.text_type == text_types["image:"]:
         return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
     
     raise ValueError(f"Invalid text type: {text_node.text_type}")
