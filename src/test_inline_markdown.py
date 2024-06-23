@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, text_types
-from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
+from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images
 
 class TestInlineMarkdown(unittest.TestCase):
     def test_split_nodes_delimiter_bold(self):
@@ -57,7 +57,16 @@ class TestInlineMarkdown(unittest.TestCase):
         links = extract_markdown_links(text)
 
         self.assertEqual(links, [("a link", "https://boot.dev/")])
-        
+
+    def test_split_nodes_images(self):
+        new_nodes = split_nodes_images([TextNode("This is text with an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and another ![second image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png)", text_types["text"])])
+
+        self.assertEqual(new_nodes, [
+            TextNode("This is text with an ", text_types["text"]),
+            TextNode("image", text_types["image"], "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+            TextNode(" and another ", text_types["text"]),
+            TextNode("second image", text_types["image"], "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png")
+        ])
 
 if __name__ == "__main__":
     unittest.main()
