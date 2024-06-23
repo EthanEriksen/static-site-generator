@@ -72,5 +72,48 @@ def split_nodes_images(old_nodes):
     return new_nodes
 
 
+def split_nodes_links(old_nodes):
+    new_nodes = []
+
+    for old_node in old_nodes:
+        
+        # if old_node is empty, skip it
+        if old_node.text == "":
+            continue
+        
+        links = extract_markdown_links(old_node.text)
+
+        # if old_node has no links, put it back without altering it
+        if links == []:
+            new_nodes.append(old_node)
+            continue
+
+        remaining_text = old_node.text
+
+        for link in links:
+            text = link[0]
+            url = link[1]
+
+            # split the text on the link
+            split_text = remaining_text.split(f"![{text}]({url})", 1)
+            
+            # if there was text before the image, put it in a new node
+            if split_text[0] != "":
+                new_nodes.append(TextNode(split_text[0], text_types["text"]))
+
+            # add the image node
+            new_nodes.append(TextNode(link[0], text_types["link"], link[1]))
+
+            # put the remaining text back for next iteration
+            remaining_text = split_text[1]
+
+        # if there is text leftover, add a final node containing it
+        if remaining_text != "":
+            new_nodes.append(TextNode(remaining_text, text_types["text"]))
+    
+    return new_nodes
+
+
+
 def extract_markdown_links(text):
     return re.findall(r"\[(.*?)\]\((.*?)\)", text)

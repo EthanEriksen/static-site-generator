@@ -1,6 +1,12 @@
 import unittest
 from textnode import TextNode, text_types
-from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images
+from inline_markdown import (
+    split_nodes_delimiter,
+    extract_markdown_images,
+    extract_markdown_links,
+    split_nodes_images,
+    split_nodes_links
+)
 
 class TestInlineMarkdown(unittest.TestCase):
     def test_split_nodes_delimiter_bold(self):
@@ -66,6 +72,16 @@ class TestInlineMarkdown(unittest.TestCase):
             TextNode("image", text_types["image"], "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
             TextNode(" and another ", text_types["text"]),
             TextNode("second image", text_types["image"], "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png")
+        ])
+
+    def test_split_nodes_links(self):
+        new_nodes = split_nodes_links([TextNode("This is text with an ![link](https://boot.dev/link) and another ![second link](https://boot.dev/link2)", text_types["text"])])
+
+        self.assertEqual(new_nodes, [
+            TextNode("This is text with an ", text_types["text"]),
+            TextNode("link", text_types["link"], "https://boot.dev/link"),
+            TextNode(" and another ", text_types["text"]),
+            TextNode("second link", text_types["link"], "https://boot.dev/link2")
         ])
 
 if __name__ == "__main__":
