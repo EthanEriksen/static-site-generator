@@ -75,7 +75,7 @@ class TestInlineMarkdown(unittest.TestCase):
         ])
 
     def test_split_nodes_links(self):
-        new_nodes = split_nodes_links([TextNode("This is text with an ![link](https://boot.dev/link) and another ![second link](https://boot.dev/link2)", text_types["text"])])
+        new_nodes = split_nodes_links([TextNode("This is text with an [link](https://boot.dev/link) and another [second link](https://boot.dev/link2)", text_types["text"])])
 
         self.assertEqual(new_nodes, [
             TextNode("This is text with an ", text_types["text"]),

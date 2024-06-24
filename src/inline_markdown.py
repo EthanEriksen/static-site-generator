@@ -95,7 +95,7 @@ def split_nodes_links(old_nodes):
             url = link[1]
 
             # split the text on the link
-            split_text = remaining_text.split(f"![{text}]({url})", 1)
+            split_text = remaining_text.split(f"[{text}]({url})", 1)
             
             # if there was text before the image, put it in a new node
             if split_text[0] != "":
