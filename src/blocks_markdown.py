@@ -18,3 +18,46 @@ def markdown_to_blocks(markdown):
         filtered_blocks.append(raw_block)
 
     return filtered_blocks
+
+
+def block_to_block_type(block):
+    if block[:2] == "# ":
+        return block_type_heading
+
+    if block[:3] == "```" and block[-3:] == "```":
+        return block_type_code
+
+    block_lines = block.split("\n")
+
+    is_quote = True
+
+    for line in block_lines:
+        if line[:2] != "> ":
+            is_quote = False
+            continue
+
+    if is_quote:
+        return block_type_quote
+
+    is_ul = True
+
+    for line in block_lines:
+        if line[:2] != "* " and line[:2] != "- ":
+            is_ul = False
+            continue
+
+    if is_ul:
+        return block_type_unordered_list
+
+    is_ol = True
+
+    # To-do: fix this
+    for line in block_lines:
+        if line != r"\d+\.\ .*":
+            is_ol = False
+            continue
+
+    if is_ol:
+        return block_type_ordered_list
+
+    return block_type_paragraph

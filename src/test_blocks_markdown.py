@@ -16,6 +16,21 @@ class TestMarkdownBlocks(unittest.TestCase):
             ],
         )
 
+    def test_block_to_block_type(self):
+        paragraph = "This is a paragraph."
+        heading = "# This is a heading."
+        code = "```This is a code block.\nThis is more code.```"
+        quote = "> This is a quote.\n> This is the second line of the quote."
+        unordered_list = "* List item 1\n* List item 2\n* List item 3\n* List item 4"
+        ordered_list = "1. List item 1\n2. List item 2\n3. List item 3"
+
+        self.assertEqual(block_to_block_type(paragraph), block_type_paragraph)
+        self.assertEqual(block_to_block_type(heading), block_type_heading)
+        self.assertEqual(block_to_block_type(code), block_type_code)
+        self.assertEqual(block_to_block_type(quote), block_type_quote)
+        self.assertEqual(block_to_block_type(unordered_list), block_type_unordered_list)
+        self.assertEqual(block_to_block_type(ordered_list), block_type_ordered_list)
+
 
 if __name__ == "__main__":
     unittest.main()
