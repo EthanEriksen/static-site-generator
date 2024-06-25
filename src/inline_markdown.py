@@ -1,12 +1,20 @@
 import re
-from textnode import TextNode, text_types
+from textnode import (
+    TextNode,
+    text_type_text,
+    text_type_italic,
+    text_type_bold,
+    text_type_code,
+    text_type_image,
+    text_type_link,
+)
 
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
 
     for old_node in old_nodes:
-        if old_node.text_type != text_types["text"]:
+        if old_node.text_type != text_type_text:
             new_nodes.append(old_node)
             continue
 
@@ -20,7 +28,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 continue
 
             if i % 2 == 0:
-                new_nodes.append(TextNode(sections[i], text_types["text"]))
+                new_nodes.append(TextNode(sections[i], text_type_text))
 
             else:
                 new_nodes.append(TextNode(sections[i], text_type))
@@ -59,17 +67,17 @@ def split_nodes_images(old_nodes):
 
             # if there was text before the image, put it in a new node
             if split_text[0] != "":
-                new_nodes.append(TextNode(split_text[0], text_types["text"]))
+                new_nodes.append(TextNode(split_text[0], text_type_text))
 
             # add the image node
-            new_nodes.append(TextNode(image[0], text_types["image"], image[1]))
+            new_nodes.append(TextNode(image[0], text_type_image, image[1]))
 
             # put the remaining text back for next iteration
             remaining_text = split_text[1]
 
         # if there is text leftover, add a final node containing it
         if remaining_text != "":
-            new_nodes.append(TextNode(remaining_text, text_types["text"]))
+            new_nodes.append(TextNode(remaining_text, text_type_text))
 
     return new_nodes
 
@@ -105,26 +113,26 @@ def split_nodes_links(old_nodes):
 
             # if there was text before the image, put it in a new node
             if split_text[0] != "":
-                new_nodes.append(TextNode(split_text[0], text_types["text"]))
+                new_nodes.append(TextNode(split_text[0], text_type_text))
 
             # add the image node
-            new_nodes.append(TextNode(link[0], text_types["link"], link[1]))
+            new_nodes.append(TextNode(link[0], text_type_link, link[1]))
 
             # put the remaining text back for next iteration
             remaining_text = split_text[1]
 
         # if there is text leftover, add a final node containing it
         if remaining_text != "":
-            new_nodes.append(TextNode(remaining_text, text_types["text"]))
+            new_nodes.append(TextNode(remaining_text, text_type_text))
 
     return new_nodes
 
 
 def text_to_textnodes(text):
-    nodes = [TextNode(text, text_types["text"])]
-    nodes = split_nodes_delimiter(nodes, "**", text_types["bold"])
-    nodes = split_nodes_delimiter(nodes, "*", text_types["italic"])
-    nodes = split_nodes_delimiter(nodes, "`", text_types["code"])
+    nodes = [TextNode(text, text_type_text)]
+    nodes = split_nodes_delimiter(nodes, "**", text_type_bold)
+    nodes = split_nodes_delimiter(nodes, "*", text_type_italic)
+    nodes = split_nodes_delimiter(nodes, "`", text_type_code)
     nodes = split_nodes_images(nodes)
     nodes = split_nodes_links(nodes)
     return nodes

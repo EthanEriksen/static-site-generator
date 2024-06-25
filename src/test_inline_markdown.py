@@ -1,5 +1,14 @@
 import unittest
-from textnode import TextNode, text_types
+from textnode import (
+    TextNode,
+    text_type_text,
+    text_type_italic,
+    text_type_bold,
+    text_type_code,
+    text_type_image,
+    text_type_link,
+)
+
 from inline_markdown import (
     split_nodes_delimiter,
     extract_markdown_images,
@@ -13,43 +22,43 @@ from inline_markdown import (
 class TestInlineMarkdown(unittest.TestCase):
     def test_split_nodes_delimiter_bold(self):
         input_nodes = [
-            TextNode("This is some text.", text_types["text"]),
-            TextNode("This text is bold.", text_types["bold"]),
-            TextNode("This should be **bold**", text_types["text"]),
-            TextNode("**This is all bold**", text_types["text"]),
+            TextNode("This is some text.", text_type_text),
+            TextNode("This text is bold.", text_type_bold),
+            TextNode("This should be **bold**", text_type_text),
+            TextNode("**This is all bold**", text_type_text),
         ]
 
-        output_nodes = split_nodes_delimiter(input_nodes, "**", text_types["bold"])
+        output_nodes = split_nodes_delimiter(input_nodes, "**", text_type_bold)
 
         correct_output_nodes = [
-            TextNode("This is some text.", text_types["text"]),
-            TextNode("This text is bold.", text_types["bold"]),
-            TextNode("This should be ", text_types["text"]),
-            TextNode("bold", text_types["bold"]),
-            TextNode("This is all bold", text_types["bold"]),
+            TextNode("This is some text.", text_type_text),
+            TextNode("This text is bold.", text_type_bold),
+            TextNode("This should be ", text_type_text),
+            TextNode("bold", text_type_bold),
+            TextNode("This is all bold", text_type_bold),
         ]
 
         self.assertEqual(output_nodes, correct_output_nodes)
 
     def test_split_nodes_delimiter_code(self):
         input_nodes = [
-            TextNode("This is some text.", text_types["text"]),
-            TextNode("This text is code.", text_types["code"]),
-            TextNode("This should be `code`", text_types["text"]),
-            TextNode("`This is all code`", text_types["text"]),
-            TextNode("`This is code` but this isn't", text_types["text"]),
+            TextNode("This is some text.", text_type_text),
+            TextNode("This text is code.", text_type_code),
+            TextNode("This should be `code`", text_type_text),
+            TextNode("`This is all code`", text_type_text),
+            TextNode("`This is code` but this isn't", text_type_text),
         ]
 
-        output_nodes = split_nodes_delimiter(input_nodes, "`", text_types["code"])
+        output_nodes = split_nodes_delimiter(input_nodes, "`", text_type_code)
 
         correct_output_nodes = [
-            TextNode("This is some text.", text_types["text"]),
-            TextNode("This text is code.", text_types["code"]),
-            TextNode("This should be ", text_types["text"]),
-            TextNode("code", text_types["code"]),
-            TextNode("This is all code", text_types["code"]),
-            TextNode("This is code", text_types["code"]),
-            TextNode(" but this isn't", text_types["text"]),
+            TextNode("This is some text.", text_type_text),
+            TextNode("This text is code.", text_type_code),
+            TextNode("This should be ", text_type_text),
+            TextNode("code", text_type_code),
+            TextNode("This is all code", text_type_code),
+            TextNode("This is code", text_type_code),
+            TextNode(" but this isn't", text_type_text),
         ]
 
         self.assertEqual(output_nodes, correct_output_nodes)
@@ -71,7 +80,7 @@ class TestInlineMarkdown(unittest.TestCase):
             [
                 TextNode(
                     "This is text with an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and another ![second image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png)",
-                    text_types["text"],
+                    text_type_text,
                 )
             ]
         )
@@ -79,16 +88,16 @@ class TestInlineMarkdown(unittest.TestCase):
         self.assertEqual(
             new_nodes,
             [
-                TextNode("This is text with an ", text_types["text"]),
+                TextNode("This is text with an ", text_type_text),
                 TextNode(
                     "image",
-                    text_types["image"],
+                    text_type_image,
                     "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png",
                 ),
-                TextNode(" and another ", text_types["text"]),
+                TextNode(" and another ", text_type_text),
                 TextNode(
                     "second image",
-                    text_types["image"],
+                    text_type_image,
                     "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png",
                 ),
             ],
@@ -99,7 +108,7 @@ class TestInlineMarkdown(unittest.TestCase):
             [
                 TextNode(
                     "This is text with an [link](https://boot.dev/link) and another [second link](https://boot.dev/link2)",
-                    text_types["text"],
+                    text_type_text,
                 )
             ]
         )
@@ -107,10 +116,10 @@ class TestInlineMarkdown(unittest.TestCase):
         self.assertEqual(
             new_nodes,
             [
-                TextNode("This is text with an ", text_types["text"]),
-                TextNode("link", text_types["link"], "https://boot.dev/link"),
-                TextNode(" and another ", text_types["text"]),
-                TextNode("second link", text_types["link"], "https://boot.dev/link2"),
+                TextNode("This is text with an ", text_type_text),
+                TextNode("link", text_type_link, "https://boot.dev/link"),
+                TextNode(" and another ", text_type_text),
+                TextNode("second link", text_type_link, "https://boot.dev/link2"),
             ],
         )
 
@@ -122,20 +131,20 @@ class TestInlineMarkdown(unittest.TestCase):
         self.assertEqual(
             new_nodes,
             [
-                TextNode("This is ", text_types["text"]),
-                TextNode("text", text_types["bold"]),
-                TextNode(" with an ", text_types["text"]),
-                TextNode("italic", text_types["italic"]),
-                TextNode(" word and a ", text_types["text"]),
-                TextNode("code block", text_types["code"]),
-                TextNode(" and an ", text_types["text"]),
+                TextNode("This is ", text_type_text),
+                TextNode("text", text_type_bold),
+                TextNode(" with an ", text_type_text),
+                TextNode("italic", text_type_italic),
+                TextNode(" word and a ", text_type_text),
+                TextNode("code block", text_type_code),
+                TextNode(" and an ", text_type_text),
                 TextNode(
                     "image",
-                    text_types["image"],
+                    text_type_image,
                     "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png",
                 ),
-                TextNode(" and a ", text_types["text"]),
-                TextNode("link", text_types["link"], "https://boot.dev"),
+                TextNode(" and a ", text_type_text),
+                TextNode("link", text_type_link, "https://boot.dev"),
             ],
         )
 
