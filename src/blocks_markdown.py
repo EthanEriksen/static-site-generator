@@ -1,3 +1,5 @@
+import re
+
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
 block_type_code = "code"
@@ -44,7 +46,7 @@ def block_to_block_type(block):
     for line in block_lines:
         if line[:2] != "* " and line[:2] != "- ":
             is_ul = False
-            continue
+            break
 
     if is_ul:
         return block_type_unordered_list
@@ -53,9 +55,9 @@ def block_to_block_type(block):
 
     # To-do: fix this
     for line in block_lines:
-        if line != r"\d+\.\ .*":
+        if not re.match(r"\d+\.\ .*", line):
             is_ol = False
-            continue
+            break
 
     if is_ol:
         return block_type_ordered_list
