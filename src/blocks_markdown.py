@@ -1,4 +1,15 @@
 import re
+from htmlnode import ParentNode
+from textnode import (
+    text_node_to_html_node,
+    text_type_bold,
+    text_type_code,
+    text_type_image,
+    text_type_italic,
+    text_type_link,
+    text_type_text,
+)
+from inline_markdown import text_to_textnodes
 
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
@@ -62,3 +73,12 @@ def block_to_block_type(block):
         return block_type_ordered_list
 
     return block_type_paragraph
+
+
+def paragraph_block_to_html(block):
+    lines = block.split("\n")
+    text = " ".join(lines)
+    text_node = text_to_textnodes(text)
+    children = text_node_to_html_node(text_node)
+    html_node = ParentNode("p", children)
+    return html_node
