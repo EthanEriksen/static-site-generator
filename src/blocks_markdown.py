@@ -53,7 +53,6 @@ def block_to_block_type(block):
 
     is_ol = True
 
-    # To-do: fix this
     for line in block_lines:
         if not re.match(r"\d+\.\ .*", line):
             is_ol = False
