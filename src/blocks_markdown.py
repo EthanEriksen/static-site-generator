@@ -1,14 +1,7 @@
 import re
 from htmlnode import ParentNode
-from textnode import (
-    text_node_to_html_node,
-    text_type_bold,
-    text_type_code,
-    text_type_image,
-    text_type_italic,
-    text_type_link,
-    text_type_text,
-)
+from textnode import text_node_to_html_node
+
 from inline_markdown import text_to_textnodes
 
 block_type_paragraph = "paragraph"
@@ -81,4 +74,21 @@ def paragraph_block_to_html(block):
     text_node = text_to_textnodes(text)
     children = text_node_to_html_node(text_node)
     html_node = ParentNode("p", children)
+
+    return html_node
+
+
+def heading_block_to_html(block):
+    level = 0
+
+    for char in block:
+        if char == "#" and level < 6:
+            level += 1
+        else:
+            break
+
+    text_node = text_to_textnodes(block)
+    children = text_node_to_html_node(text_node)
+    html_node = ParentNode(f"h{level}", children)
+
     return html_node
