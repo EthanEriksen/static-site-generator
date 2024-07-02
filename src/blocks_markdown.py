@@ -100,4 +100,22 @@ def code_block_to_html(block):
     children = text_node
     html_node = ParentNode("pre", children)
 
-    return ParentNode("code", [html_node])
+    return ParentNode("code", html_node)
+
+
+def quote_block_to_html(block):
+    lines = block.split("\n")
+    treated_lines = []
+
+    for line in lines:
+        if line[:2] != "> ":
+            raise ValueError("Not a valid quote block")
+        else:
+            treated_lines.append(line[2:])
+
+    text = " ".join(treated_lines)
+    text_node = text_to_textnodes(text)
+    children = text_node_to_html_node(text_node)
+    html_node = ParentNode("blockquote", children)
+
+    return html_node
