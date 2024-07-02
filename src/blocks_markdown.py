@@ -92,3 +92,12 @@ def heading_block_to_html(block):
     html_node = ParentNode(f"h{level}", children)
 
     return html_node
+
+
+def code_block_to_html(block):
+    text = block[3:-3]
+    text_node = text_to_textnodes(text)
+    children = text_node
+    html_node = ParentNode("pre", children)
+
+    return ParentNode("code", [html_node])
