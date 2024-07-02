@@ -12,6 +12,15 @@ block_type_unordered_list = "unordered_list"
 block_type_ordered_list = "ordered_list"
 
 
+def text_to_children(text):
+    text_nodes = text_to_textnodes(text)
+    children = []
+    for text_node in text_nodes:
+        html_node = text_node_to_html_node(text_node)
+        children.append(html_node)
+    return children
+
+
 def markdown_to_blocks(markdown):
     raw_blocks = markdown.split("\n\n")
     filtered_blocks = []
@@ -71,8 +80,7 @@ def block_to_block_type(block):
 def paragraph_block_to_html(block):
     lines = block.split("\n")
     text = " ".join(lines)
-    text_node = text_to_textnodes(text)
-    children = text_node_to_html_node(text_node)
+    children = text_to_children(text)
     html_node = ParentNode("p", children)
 
     return html_node
@@ -87,8 +95,7 @@ def heading_block_to_html(block):
         else:
             break
 
-    text_node = text_to_textnodes(block)
-    children = text_node_to_html_node(text_node)
+    children = text_to_children(block[level + 1 :])
     html_node = ParentNode(f"h{level}", children)
 
     return html_node
@@ -96,8 +103,7 @@ def heading_block_to_html(block):
 
 def code_block_to_html(block):
     text = block[3:-3]
-    text_node = text_to_textnodes(text)
-    children = text_node
+    children = text_to_children(text)
     html_node = ParentNode("pre", children)
 
     return ParentNode("code", html_node)
@@ -114,8 +120,27 @@ def quote_block_to_html(block):
             treated_lines.append(line[2:])
 
     text = " ".join(treated_lines)
-    text_node = text_to_textnodes(text)
-    children = text_node_to_html_node(text_node)
+    children = text_to_children(text)
     html_node = ParentNode("blockquote", children)
 
     return html_node
+
+
+def olist_to_html_node(block):
+    items = block.split("\n")
+    html_items = []
+    for item in items:
+        text = item[3:]
+        children = text_to_children(text)
+        html_items.append(ParentNode("li", children))
+    return ParentNode("ol", html_items)
+
+
+def ulist_to_html_node(block):
+    items = block.split("\n")
+    html_items = []
+    for item in items:
+        text = item[2:]
+        children = text_to_children(text)
+        html_items.append(ParentNode("li", children))
+    return ParentNode("ul", html_items)
